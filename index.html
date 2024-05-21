@@ -32,43 +32,75 @@
 <body>
     <div class="container">
         <h1>Calculatrice de Protéines</h1>
-        <div class="food-item">
-            <label for="eggs">Œufs (unité):</label>
-            <input type="number" id="eggs" value="0">
+        <div id="food-list">
+            <div class="food-item">
+                <label for="eggs">Œufs (unité):</label>
+                <input type="number" id="eggs" value="0">
+            </div>
+            <div class="food-item">
+                <label for="lentils">Lentilles (g):</label>
+                <input type="number" id="lentils" value="0">
+            </div>
+            <div class="food-item">
+                <label for="zucchini">Courgettes (g):</label>
+                <input type="number" id="zucchini" value="0">
+            </div>
+            <div class="food-item">
+                <label for="peppers">Poivrons (g):</label>
+                <input type="number" id="peppers" value="0">
+            </div>
+            <!-- Ajoutez d'autres aliments ici -->
         </div>
-        <div class="food-item">
-            <label for="lentils">Lentilles (g):</label>
-            <input type="number" id="lentils" value="0">
-        </div>
-        <div class="food-item">
-            <label for="zucchini">Courgettes (g):</label>
-            <input type="number" id="zucchini" value="0">
-        </div>
-        <div class="food-item">
-            <label for="peppers">Poivrons (g):</label>
-            <input type="number" id="peppers" value="0">
-        </div>
+        <button onclick="addFoodItem()">Ajouter un aliment</button>
         <button onclick="calculateProteins()">Calculer</button>
         <div class="result" id="result"></div>
     </div>
 
     <script>
+        const foodData = {
+            "Œufs (unité)": 6,
+            "Lentilles (g)": 0.09,
+            "Courgettes (g)": 0.012,
+            "Poivrons (g)": 0.01,
+            // Ajoutez d'autres aliments et leurs valeurs en protéines ici
+        };
+
+        function addFoodItem() {
+            const foodList = document.getElementById('food-list');
+            const foodItem = document.createElement('div');
+            foodItem.className = 'food-item';
+
+            const label = document.createElement('label');
+            const select = document.createElement('select');
+            const input = document.createElement('input');
+
+            select.innerHTML = Object.keys(foodData).map(food => `<option value="${food}">${food}</option>`).join('');
+            input.type = 'number';
+            input.value = 0;
+
+            label.appendChild(select);
+            foodItem.appendChild(label);
+            foodItem.appendChild(input);
+            foodList.appendChild(foodItem);
+        }
+
         function calculateProteins() {
-            // Quantités saisies par l'utilisateur
-            const eggs = document.getElementById('eggs').value;
-            const lentils = document.getElementById('lentils').value;
-            const zucchini = document.getElementById('zucchini').value;
-            const peppers = document.getElementById('peppers').value;
+            const foodItems = document.querySelectorAll('.food-item');
+            let totalProteins = 0;
 
-            // Calcul des protéines
-            const proteinEggs = eggs * 6; // 6g de protéines par œuf
-            const proteinLentils = (lentils / 100) * 9; // 9g de protéines pour 100g de lentilles
-            const proteinZucchini = (zucchini / 100) * 1.2; // 1.2g de protéines pour 100g de courgettes
-            const proteinPeppers = (peppers / 100) * 1; // 1g de protéines pour 100g de poivrons
+            foodItems.forEach(item => {
+                const select = item.querySelector('select');
+                const input = item.querySelector('input');
+                const food = select.value;
+                const quantity = input.value;
 
-            const totalProteins = proteinEggs + proteinLentils + proteinZucchini + proteinPeppers;
+                if (food.endsWith('(g)')) {
+                    totalProteins += foodData[food] * quantity;
+                } else {
+                    totalProteins += foodData[food] * quantity;
+                }
+            });
 
-            // Affichage du résultat
             document.getElementById('result').innerText = `Total de protéines: ${totalProteins.toFixed(2)} g`;
         }
     </script>
